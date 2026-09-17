@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Bearings — learning kits that give you the history, timeline, map, and vocabulary for the conflicts shaping the news.">
+<title>Bearings — Learning kits for what's actually happening</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #EFEAE0;
+    --surface: #F7F3E9;
+    --surface-2: #E4DCC7;
+    --text: #1C2536;
+    --text-soft: #565F72;
+    --accent: #A8461F;
+    --accent-soft: #C9714A;
+    --accent-2: #2F5A66;
+    --border: #CFC6AE;
+    --face-back-bg: #1C2536;
+    --face-back-text: #F2EDE0;
+    --shadow: 0 14px 30px rgba(28,37,54,0.16);
+    --overlay: rgba(20,24,32,0.55);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #12161F; --surface: #1A1F2B; --surface-2: #232A38;
+      --text: #E7E1D3; --text-soft: #A8A192; --accent: #D9835A;
+      --accent-soft: #E8A683; --accent-2: #7FAAB3; --border: #333B4A;
+      --face-back-bg: #2A3244; --face-back-text: #F2EDE0;
+      --shadow: 0 14px 30px rgba(0,0,0,0.45); --overlay: rgba(0,0,0,0.65);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #12161F; --surface: #1A1F2B; --surface-2: #232A38;
+    --text: #E7E1D3; --text-soft: #A8A192; --accent: #D9835A;
+    --accent-soft: #E8A683; --accent-2: #7FAAB3; --border: #333B4A;
+    --face-back-bg: #2A3244; --face-back-text: #F2EDE0;
+    --shadow: 0 14px 30px rgba(0,0,0,0.45); --overlay: rgba(0,0,0,0.65);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--paper); color: var(--text);
+    font-family: 'Public Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+  }
+  h1,h2,h3 { font-family: 'Source Serif 4', Georgia, serif; font-weight: 600; line-height: 1.2; margin: 0 0 0.6em; color: var(--text); }
+  h1 { font-size: clamp(1.9rem, 4vw, 2.9rem); }
+  h2 { font-size: clamp(1.4rem, 2.6vw, 1.9rem); }
+  h3 { font-size: 1.1rem; }
+  p { margin: 0 0 1em; max-width: 64ch; }
+  a { color: var(--accent-2); }
+  button { font-family: inherit; }
+  svg { max-width: 100%; display: block; }
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+  :focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.7rem 1.3rem; border-radius: 6px; border: 1px solid transparent; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background .15s ease, border-color .15s ease, transform .08s ease; }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary { background: var(--accent); color: #FBF6EC; }
+  .btn-primary:hover { background: var(--accent-soft); }
+  .btn-secondary { background: var(--accent-2); color: #FBF6EC; }
+  .btn-ghost { background: transparent; color: var(--text); border-color: var(--border); }
+  .btn-ghost:hover { border-color: var(--accent-2); }
+  .btn-lg { padding: 0.95rem 1.8rem; font-size: 1.05rem; }
+  .btn-block { width: 100%; }
+  .btn[disabled] { opacity: 0.4; cursor: not-allowed; }
+  .link-btn { background: none; border: none; color: var(--accent-2); text-decoration: underline; cursor: pointer; font-size: inherit; padding: 0; }
+  .btn-back { background: none; border: none; color: var(--text-soft); cursor: pointer; padding: 0 0 1.3rem; font-size: 0.95rem; }
+  .btn-back:hover { color: var(--accent-2); }
+
+  .site-header { border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--paper); z-index: 20; }
+  .header-inner { max-width: 1120px; margin: 0 auto; padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .logo { font-family: 'Source Serif 4', serif; font-size: 1.4rem; font-weight: 700; color: var(--text); text-decoration: none; }
+  .header-nav { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; justify-content: flex-end; }
+  .user-chip { font-size: 0.88rem; color: var(--text-soft); margin-right: 0.2rem; }
+  .theme-toggle { background: none; border: 1px solid var(--border); border-radius: 50%; width: 2.3rem; height: 2.3rem; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1rem; flex-shrink: 0; }
+
+  main { max-width: 1120px; margin: 0 auto; padding: 0 1.5rem 5rem; }
+
+  .hero { padding: 3.6rem 1.5rem 2.5rem; max-width: 1120px; margin: 0 auto; }
+  .hero-inner { display: grid; grid-template-columns: 1.3fr 0.9fr; gap: 3rem; align-items: center; }
+  .hero-copy p.hero-sub { color: var(--text-soft); font-size: 1.1rem; }
+  .hero-actions { margin-top: 1.6rem; }
+  .hero-stat { display: flex; justify-content: center; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 2rem 1.8rem; box-shadow: var(--shadow); transform: rotate(-1.6deg); max-width: 270px; }
+  .stat-label { font-size: 0.85rem; color: var(--text-soft); margin: 0 0 0.4em; }
+  .stat-number { font-family: 'IBM Plex Mono', monospace; font-size: 2rem; font-weight: 500; color: var(--accent); margin: 0 0 0.35em; }
+  .stat-caption { font-size: 0.85rem; color: var(--text-soft); margin: 0; max-width: none; }
+
+  .catalog { padding: 1.6rem 0 2rem; }
+  .kit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px,1fr)); gap: 1.2rem; margin-top: 1.4rem; }
+  .kit-card { border: 1px solid var(--border); border-radius: 10px; background: var(--surface); padding: 1.6rem; display: flex; flex-direction: column; justify-content: space-between; min-height: 190px; }
+  .kit-card--soon { opacity: 0.72; }
+  .kit-card-top p { color: var(--text-soft); font-size: 0.95rem; margin-bottom: 0; }
+  .kit-card-bottom { display: flex; align-items: center; justify-content: space-between; margin-top: 1.4rem; gap: 0.6rem; }
+  .kit-price { font-family: 'IBM Plex Mono', monospace; font-weight: 500; }
+  .kit-soon { font-size: 0.85rem; color: var(--text-soft); font-style: italic; }
+
+  .how { padding: 2.2rem 0 1rem; border-top: 1px solid var(--border); margin-top: 0.5rem; }
+  .how-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 1.5rem; margin-top: 1.3rem; }
+  .how-item p { color: var(--text-soft); font-size: 0.95rem; }
+
+  .kit-detail-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 2.4rem; align-items: start; margin-top: 0.5rem; }
+  .kit-detail-sub { color: var(--text-soft); font-size: 1.15rem; }
+  .kit-stats { list-style: none; padding: 0; margin: 1.4rem 0 0; display: flex; gap: 1.6rem; flex-wrap: wrap; }
+  .kit-stats li { font-size: 0.9rem; color: var(--text-soft); }
+  .kit-stats strong { display: block; font-family: 'IBM Plex Mono', monospace; font-size: 1.25rem; color: var(--text); }
+  .kit-purchase-card { border: 1px solid var(--border); border-radius: 10px; background: var(--surface); padding: 1.7rem; position: sticky; top: 5.5rem; }
+  .kit-price-lg { font-family: 'IBM Plex Mono', monospace; font-size: 2rem; margin: 0; }
+  .kit-price-note { color: var(--text-soft); font-size: 0.88rem; margin-top: 0.2rem; }
+  .demo-note { font-size: 0.82rem; color: var(--text-soft); margin-top: 0.9rem; margin-bottom: 0; }
+  .coming-soon-note { color: var(--text-soft); }
+
+  .dashboard h1 { margin-bottom: 0.25em; }
+  .tab-bar { display: flex; gap: 0.2rem; border-bottom: 1px solid var(--border); overflow-x: auto; margin: 1.1rem 0 2rem; }
+  .tab { background: none; border: none; padding: 0.8rem 1rem; font-size: 0.95rem; color: var(--text-soft); cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; }
+  .tab--active { color: var(--text); border-bottom-color: var(--accent); font-weight: 600; }
+
+  .overview-lead { font-size: 1.1rem; }
+  .overview-grid { display: flex; gap: 2rem; margin: 1.3rem 0; flex-wrap: wrap; }
+  .overview-grid h3 { font-family: 'IBM Plex Mono', monospace; font-size: 1.6rem; margin-bottom: 0.1em; }
+  .overview-grid p { color: var(--text-soft); font-size: 0.85rem; margin: 0; max-width: none; }
+  .overview-note { font-size: 0.85rem; color: var(--text-soft); font-style: italic; margin-top: 1.6rem; }
+
+  .workbook-chapter { padding: 1.5rem 0; border-top: 1px solid var(--border); }
+  .workbook-chapter:first-child { border-top: none; padding-top: 0; }
+  .chapter-num { font-family: 'IBM Plex Mono', monospace; color: var(--accent); margin-right: 0.5rem; font-size: 0.85em; }
+  .workbook-chapter p { max-width: 66ch; }
+
+  .flashcards { max-width: 520px; }
+  .flash-progress { font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; color: var(--text-soft); }
+  .flash-card { perspective: 1200px; cursor: pointer; margin: 1rem 0 1.4rem; }
+  .flash-card-inner { position: relative; width: 100%; height: 280px; transition: transform 0.5s cubic-bezier(.2,.7,.3,1); transform-style: preserve-3d; }
+  .flash-card--flipped .flash-card-inner { transform: rotateY(180deg); }
+  .flash-face { position: absolute; inset: 0; backface-visibility: hidden; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 2rem; }
+  .flash-face--front { background: var(--surface); border: 1px solid var(--border); }
+  .flash-face--front p { font-size: 1.2rem; font-family: 'Source Serif 4', serif; max-width: none; }
+  .flash-hint { position: absolute; bottom: 1rem; font-size: 0.78rem; color: var(--text-soft); }
+  .flash-face--back { background: var(--face-back-bg); color: var(--face-back-text); transform: rotateY(180deg); }
+  .flash-face--back p { font-size: 1.03rem; max-width: none; margin: 0; }
+  .flash-controls { display: flex; gap: 0.6rem; }
+
+  .timeline { position: relative; padding-left: 1.6rem; border-left: 2px solid var(--border); }
+  .timeline-event { position: relative; padding-bottom: 1.7rem; }
+  .timeline-event::before { content: ''; position: absolute; left: -1.72rem; top: 0.3rem; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+  .timeline-date { font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; color: var(--accent); margin-bottom: 0.2rem; }
+  .timeline-body h3 { margin-bottom: 0.2em; font-size: 1.03rem; }
+  .timeline-body p { color: var(--text-soft); font-size: 0.94rem; margin: 0; }
+
+  .map-tab svg { border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
+  .map-label { font-family: 'Public Sans', sans-serif; font-size: 13px; fill: var(--text-soft); }
+  .map-city { font-family: 'Public Sans', sans-serif; font-size: 12px; fill: var(--text); font-weight: 600; }
+  .map-caption { font-size: 0.85rem; color: var(--text-soft); margin-top: 0.8rem; }
+
+  .modal-overlay { position: fixed; inset: 0; background: var(--overlay); display: flex; align-items: center; justify-content: center; padding: 1.5rem; z-index: 50; }
+  .modal { background: var(--paper); border-radius: 12px; padding: 2rem; max-width: 400px; width: 100%; position: relative; box-shadow: var(--shadow); max-height: 90vh; overflow-y: auto; }
+  .modal-close { position: absolute; top: 0.8rem; right: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-soft); line-height: 1; }
+  .modal-sub { color: var(--text-soft); font-size: 0.92rem; }
+  .field { display: block; margin-bottom: 1rem; }
+  .field span { display: block; font-size: 0.85rem; margin-bottom: 0.3rem; color: var(--text-soft); }
+  .field input { width: 100%; padding: 0.65rem 0.8rem; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 0.95rem; }
+  .field-row { display: flex; gap: 0.8rem; }
+  .field-row .field { flex: 1; }
+  .modal-switch { font-size: 0.88rem; color: var(--text-soft); text-align: center; margin-top: 1rem; margin-bottom: 0; max-width: none; }
+  .demo-banner { background: var(--surface-2); border: 1px dashed var(--border); border-radius: 8px; padding: 0.8rem 1rem; font-size: 0.85rem; color: var(--text-soft); margin-bottom: 1.2rem; max-width: none; }
+
+  .site-footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; text-align: center; }
+  .site-footer p { color: var(--text-soft); font-size: 0.82rem; max-width: 100%; margin: 0 auto; }
+
+  @media (max-width: 800px) {
+    .hero-inner { grid-template-columns: 1fr; }
+    .hero-stat { order: -1; }
+    .kit-detail-grid { grid-template-columns: 1fr; }
+    .kit-purchase-card { position: static; }
+  }
+  @media (max-width: 520px) {
+    .header-inner { padding: 0.8rem 1rem; }
+    .logo { font-size: 1.2rem; }
+    main, .hero, .catalog { padding-left: 1rem; padding-right: 1rem; }
+    .kit-stats { gap: 1rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+(function(){
+
+  function escapeHtml(str){
+    var div = document.createElement('div');
+    div.textContent = str == null ? '' : String(str);
+    return div.innerHTML;
+  }
+
+  function daysSince(dateStr){
+    var start = new Date(dateStr + 'T00:00:00Z');
+    var now = new Date();
+    return Math.floor((now - start) / 86400000) + 1;
+  }
+
+  var UKRAINE_WAR_DAYS = daysSince('2022-02-24');
+  var NOW_MONTH_YEAR = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+  var CH6_INTRO = '<p>As of ' + NOW_MONTH_YEAR + ', the war is still active &mdash; day ' + UKRAINE_WAR_DAYS.toLocaleString() + ' since the full-scale invasion began &mdash; and Russia controls roughly 20% of Ukraine\'s internationally recognized territory, including Crimea, nearly all of Luhansk, and parts of Donetsk, Zaporizhzhia, and Kherson.</p>';
+
+  var UKRAINE_MAP_SVG = '<svg viewBox="0 0 900 700" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Simplified schematic map of Ukraine, Russia, and neighboring countries, showing regions under Russian occupation">' +
+    '<rect x="0" y="0" width="900" height="700" fill="var(--surface)"/>' +
+    '<rect x="255" y="25" width="330" height="70" rx="14" fill="var(--surface-2)" stroke="var(--border)"/>' +
+    '<text x="420" y="65" text-anchor="middle" class="map-label">Belarus</text>' +
+    '<rect x="630" y="25" width="250" height="480" rx="14" fill="var(--surface-2)" stroke="var(--border)"/>' +
+    '<text x="755" y="58" text-anchor="middle" class="map-label">Russia</text>' +
+    '<rect x="70" y="110" width="150" height="260" rx="14" fill="var(--surface-2)" stroke="var(--border)"/>' +
+    '<text x="145" y="225" text-anchor="middle" class="map-label"><tspan x="145" dy="0">Poland,</tspan><tspan x="145" dy="15">Slovakia,</tspan><tspan x="145" dy="15">Hungary</tspan></text>' +
+    '<rect x="120" y="420" width="220" height="90" rx="14" fill="var(--surface-2)" stroke="var(--border)"/>' +
+    '<text x="230" y="470" text-anchor="middle" class="map-label">Romania</text>' +
+    '<rect x="340" y="405" width="78" height="90" rx="10" fill="var(--surface-2)" stroke="var(--border)"/>' +
+    '<text x="379" y="455" text-anchor="middle" class="map-label" font-size="11">Moldova</text>' +
+    '<rect x="60" y="540" width="760" height="62" rx="16" fill="var(--accent-2)" opacity="0.16"/>' +
+    '<text x="440" y="576" text-anchor="middle" class="map-label">Black Sea</text>' +
+    '<polygon points="260,190 330,150 430,140 520,150 590,175 615,215 618,270 605,320 590,365 555,405 500,435 430,445 360,435 300,410 265,360 250,290 250,230" fill="var(--surface)" stroke="var(--text)" stroke-width="2.5"/>' +
+    '<text x="400" y="230" text-anchor="middle" class="map-label" font-weight="600" fill="var(--text)">Ukraine</text>' +
+    '<polygon points="555,265 615,265 618,320 600,360 560,355 545,300" fill="var(--accent)" fill-opacity="0.4" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 3"/>' +
+    '<polygon points="460,375 555,365 565,405 530,430 460,427 440,400" fill="var(--accent)" fill-opacity="0.28" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 3"/>' +
+    '<rect x="465" y="433" width="24" height="18" fill="var(--surface)" stroke="var(--text)" stroke-width="2"/>' +
+    '<polygon points="440,451 520,446 545,473 528,503 480,508 448,483" fill="var(--accent)" fill-opacity="0.48" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 3"/>' +
+    '<text x="490" y="480" text-anchor="middle" class="map-label" font-size="11">Crimea</text>' +
+    '<circle cx="360" cy="270" r="6" fill="var(--text)"/><text x="372" y="266" class="map-city">Kyiv</text>' +
+    '<circle cx="560" cy="255" r="5" fill="var(--text)"/><text x="572" y="252" class="map-city">Kharkiv</text>' +
+    '<circle cx="290" cy="215" r="5" fill="var(--text)"/><text x="262" y="205" class="map-city">Lviv</text>' +
+    '<circle cx="460" cy="345" r="5" fill="var(--text)"/><text x="470" y="343" class="map-city">Dnipro</text>' +
+    '<circle cx="380" cy="420" r="5" fill="var(--text)"/><text x="330" y="414" class="map-city">Odesa</text>' +
+    '<circle cx="565" cy="350" r="5" fill="var(--text)"/><text x="575" y="368" class="map-city">Mariupol</text>' +
+    '<g transform="translate(60,625)">' +
+      '<rect x="0" y="0" width="16" height="16" fill="var(--surface)" stroke="var(--text)" stroke-width="1.5"/>' +
+      '<text x="22" y="12" class="map-label">Ukrainian government control</text>' +
+      '<rect x="0" y="28" width="16" height="16" fill="var(--accent)" fill-opacity="0.4" stroke="var(--accent)" stroke-dasharray="3 2"/>' +
+      '<text x="22" y="40" class="map-label">Occupied or annexed by Russia</text>' +
+    '</g>' +
+  '</svg>';
+
+  var KITS = {
+    'ukraine-russia': {
+      id: 'ukraine-russia',
+      title: 'Russia and Ukraine',
+      subtitle: "How a decades-old fault line became Europe's largest war since 1945",
+      price: 9.99,
+      status: 'available',
+      overview: "A war that began in 2014 and escalated, in February 2022, into the largest armed conflict in Europe since the Second World War. This kit covers how it started, how it has unfolded, how each side explains it, and where things stand today.",
+      workbook: [
+        { heading: 'The short version', body:
+          '<p>In February 2022, Russia launched a full-scale invasion of its neighbor Ukraine &mdash; the escalation of a war that had actually started eight years earlier, in 2014, over Crimea and the eastern region known as the Donbas. What Vladimir Putin reportedly expected to be a matter of days became the largest and deadliest war in Europe since 1945.</p>' +
+          '<p>By 2026, the front line has barely moved in over a year. Russia controls roughly a fifth of Ukraine\'s internationally recognized territory. Diplomats have spent much of 2025 and 2026 negotiating over a US-brokered peace framework that neither side has fully accepted. Millions of people have been displaced, and the war\'s effects &mdash; on food prices, energy markets, and the rules governing international borders &mdash; reach far beyond the two countries actually fighting.</p>'
+        },
+        { heading: 'Where this started', body:
+          '<p>Ukraine and Russia share more than a border &mdash; centuries of tangled history, a Soviet past, and a badly bruised relationship since. Ukraine declared independence as the USSR collapsed in 1991. In 1994, it gave up the Soviet nuclear weapons stationed on its soil in exchange for security assurances from the US, UK, and Russia &mdash; a deal known as the Budapest Memorandum, whose weak wording (assurances, not guarantees) is frequently cited today.</p>' +
+          '<p>Two popular uprisings shaped the years that followed: the 2004 Orange Revolution, and the 2013&ndash;14 Euromaidan protests, sparked when President Viktor Yanukovych &mdash; under pressure from Moscow &mdash; walked away from a trade agreement with the European Union. Yanukovych fled the country in February 2014, and Russia responded within days.</p>'
+        },
+        { heading: '2014: the first war', body:
+          '<p>Unmarked Russian soldiers &mdash; nicknamed "little green men" &mdash; appeared in Crimea in late February 2014. Weeks later, Russia annexed the peninsula after a referendum that most of the world considers illegal under international law and refuses to recognize.</p>' +
+          '<p>At the same time, Russian-backed separatists declared breakaway "people\'s republics" in the Donetsk and Luhansk regions of eastern Ukraine, together known as the Donbas. A grinding war there killed roughly 14,000 people between 2014 and 2022. Two ceasefire agreements, Minsk I and Minsk II, were signed and never fully honored by either side.</p>'
+        },
+        { heading: '2022: the invasion', body:
+          '<p>On February 24, 2022, Russia attacked Ukraine on multiple fronts at once, aiming &mdash; according to Western intelligence assessments &mdash; to take Kyiv within days and replace the government. It didn\'t happen. Ukrainian resistance, combined with logistical failures on the Russian side, forced a retreat from northern Ukraine by early April. In the town of Bucha, near Kyiv, the withdrawal revealed evidence of civilian killings that international investigators have treated as potential war crimes.</p>' +
+          '<p>The war then shifted into a grinding fight for territory in the east and south. Russia besieged and eventually captured the port city of Mariupol in May 2022. Ukraine answered with two counteroffensives that autumn, retaking Kharkiv-region territory and the city of Kherson. Since then, gains on both sides have come slowly and at enormous cost &mdash; Avdiivka fell to Russian forces in February 2024, while a heavily anticipated 2023 Ukrainian counteroffensive gained only a few miles of ground.</p>'
+        },
+        { heading: 'Two stories of the same war', body:
+          '<p>Russia\'s government describes the invasion as a "special military operation" &mdash; a term Russian law makes it a crime to publicly contradict &mdash; framed around three claims: that NATO\'s expansion threatened Russian security, that Ukraine\'s government needed "denazification," and that Russian-speaking populations in Ukraine needed protection. Independent observers note that Ukraine\'s president is Jewish and was elected with over 70% of the vote, which is widely cited as evidence against the denazification claim.</p>' +
+          '<p>Ukraine and most of the world\'s governments describe the war differently: as an unprovoked invasion of a sovereign country, in violation of international law and of Russia\'s own 1994 commitments under the Budapest Memorandum. In March 2022, the United Nations General Assembly voted 141&ndash;5 to condemn the invasion and demand Russia\'s withdrawal &mdash; a rare show of near-unanimous international consensus. Understanding both framings, without treating them as equally supported by evidence, helps explain why negotiations have been so difficult: the two sides are not just disagreeing about where a border should sit, but about whether the war should have happened at all.</p>'
+        },
+        { heading: 'Where things stand, and what to watch', body:
+          CH6_INTRO +
+          '<p>Since late 2025, the Trump administration has pushed a 28-point peace framework. Its core trade-off: Ukraine would cede Donetsk territory it still controls and accept a demilitarized buffer zone recognized as Russian, in exchange for US security guarantees and limits on Russia\'s own military posture. Ukraine has called elements of the plan close to a "surrender" and rejected any formal recognition of occupied land as Russian; Russia\'s foreign ministry has said it will keep fighting until its territorial demands are met. Neither side had signed a deal as of this writing.</p>' +
+          '<p>Three broad outcomes are on the table: a negotiated settlement close to the current front line, a "frozen conflict" where fighting stops without a formal peace deal (similar to the Korean Peninsula since 1953), or continued grinding warfare with no resolution in sight. Whichever happens will shape more than Ukraine\'s borders &mdash; it will set a precedent for whether large countries can redraw borders by force in the 21st century, which is exactly why so many other governments have a stake in the outcome.</p>'
+        }
+      ],
+      flashcards: [
+        { q: 'When did Russia launch its full-scale invasion of Ukraine?', a: 'February 24, 2022. Russia had already been fighting a smaller war in eastern Ukraine since 2014 — this was a massive escalation, attacking the entire country at once.' },
+        { q: 'What was Euromaidan?', a: "A wave of protests in Kyiv's Independence Square over the winter of 2013–14, sparked when President Viktor Yanukovych abandoned a trade deal with the EU in favor of closer ties with Russia. It ended with Yanukovych fleeing the country." },
+        { q: 'What happened to Crimea in 2014?', a: 'Unmarked Russian soldiers seized the peninsula, and Russia annexed it after a referendum most of the world considers illegitimate. No major country besides Russia recognizes it as Russian territory.' },
+        { q: 'What is the Donbas?', a: 'The industrial region of eastern Ukraine made up of the Donetsk and Luhansk oblasts. Russian-backed separatists declared breakaway republics there in 2014, starting a war that killed around 14,000 people before 2022.' },
+        { q: 'What were the Minsk agreements?', a: 'Two ceasefire deals, signed in 2014 and 2015, meant to end the Donbas war. Both sides accused each other of violations, and the fighting never really stopped.' },
+        { q: 'What was the Budapest Memorandum?', a: 'A 1994 agreement in which Ukraine gave up the Soviet nuclear arsenal on its soil in return for security assurances — not guarantees — from Russia, the US, and the UK. Its weak wording is often cited as a cautionary tale.' },
+        { q: 'What does Russia officially call its invasion?', a: "A 'special military operation.' Since 2022, Russian law has made it a crime to publicly call it a war." },
+        { q: 'What happened in Bucha?', a: 'After Russian forces withdrew from this town near Kyiv in early April 2022, evidence emerged of the killing of civilians. International investigators have treated it as a potential war crime.' },
+        { q: 'How is NATO connected to this war?', a: "Russia has long opposed NATO's eastward expansion and Ukraine's potential membership. Ukraine sees NATO membership as protection against future invasion. It remains one of the hardest sticking points in any peace deal." },
+        { q: 'Roughly how much of Ukraine does Russia control, as of 2026?', a: 'About one-fifth of the country — Crimea, nearly all of Luhansk, and parts of Donetsk, Zaporizhzhia, and Kherson.' },
+        { q: "What was the 2025 US peace plan?", a: 'A 28-point framework from the Trump administration under which Ukraine would cede Donetsk territory it still holds and accept Russian control of other occupied land, in exchange for US security guarantees. Ukraine called parts of it close to surrender terms; no deal had been signed as of late 2026.' },
+        { q: 'Who is Volodymyr Zelensky?', a: "A former comedian and actor elected Ukraine's president in 2019, who has led the country's wartime government and become one of the most recognizable leaders of the war." },
+        { q: 'What are Western sanctions trying to do?', a: "Cut off Russia's access to money, technology, and export markets to limit its ability to fund the war — with mixed results, since Russia has rerouted much of its trade through countries like China and India." },
+        { q: 'How has this war affected food and energy prices worldwide?', a: "Ukraine and Russia together normally supply a huge share of the world's wheat and sunflower oil, so the war disrupted global food prices. Europe's heavy reliance on Russian gas also forced a costly, rapid shift to other energy sources." },
+        { q: "What does 'denazification' mean in Putin's justification for the war?", a: "One of his stated war aims — the claim that Ukraine's government is dominated by Nazis. Mainstream historians and analysts widely reject this: Ukraine's president is Jewish and was elected with over 70% of the vote." },
+        { q: 'How many casualties has the war caused?', a: "Western intelligence estimates put combined military dead and wounded, both sides, above 1.5 million by 2026 — one of the deadliest conflicts in Europe since World War II. Each side's claims about the other's losses tend to run higher and are harder to verify." },
+        { q: 'What is the concern about the Zaporizhzhia nuclear plant?', a: "Europe's largest nuclear plant has been occupied by Russian forces since March 2022 and has repeatedly lost outside power during the fighting, worrying international inspectors about a potential accident." },
+        { q: 'How many people have been displaced by the war?', a: 'Millions. Roughly six million Ukrainians left the country as refugees, mostly to Poland and other EU states, and millions more have been displaced inside Ukraine.' },
+        { q: "What is a 'frozen conflict'?", a: "A war where active fighting stops without a formal peace treaty, leaving the underlying dispute unresolved — like the Korean Peninsula since 1953. Some analysts think this is the most likely outcome here." },
+        { q: 'Why is this called the largest war in Europe since 1945?', a: 'By territory contested, troop numbers involved, and casualties, it has surpassed every European conflict since World War II, including the Yugoslav wars of the 1990s.' }
+      ],
+      timeline: [
+        { date: '1991', title: 'Ukraine declares independence', body: 'As the Soviet Union dissolves, Ukraine votes overwhelmingly for independence, ending nearly 70 years as a Soviet republic.' },
+        { date: '1994', title: 'Budapest Memorandum', body: 'Ukraine gives up the Soviet nuclear weapons on its soil in exchange for security assurances from Russia, the US, and the UK.' },
+        { date: '2004', title: 'Orange Revolution', body: 'Mass protests over a disputed, Russia-favored presidential election result in a re-run and a pro-Western winner.' },
+        { date: '2008', title: "NATO's Bucharest summit", body: "NATO declares that Ukraine and Georgia \"will become\" members someday, without a timeline — a promise that pleases no one and worries Moscow." },
+        { date: 'Nov 2013', title: 'Euromaidan begins', body: "President Yanukovych abandons a trade deal with the EU under Russian pressure. Protests erupt in Kyiv's Independence Square." },
+        { date: 'Feb 2014', title: 'Yanukovych flees', body: 'After months of protests and deadly clashes, Yanukovych flees to Russia. An interim government takes over.' },
+        { date: 'Feb–Mar 2014', title: 'Russia seizes Crimea', body: 'Unmarked Russian troops occupy the peninsula. Russia annexes it after a disputed referendum that most of the world refuses to recognize.' },
+        { date: 'Apr 2014', title: 'War breaks out in the Donbas', body: 'Russian-backed separatists declare breakaway republics in Donetsk and Luhansk. Fighting begins that will kill roughly 14,000 people over the next eight years.' },
+        { date: '2014–2015', title: 'Minsk I and Minsk II', body: 'Two ceasefire agreements are signed and repeatedly violated by both sides. The war in the Donbas simmers on regardless.' },
+        { date: '2019', title: 'Zelensky elected', body: 'Volodymyr Zelensky, a comedian with no prior political office, wins the presidency in a landslide.' },
+        { date: 'Dec 2021', title: 'Russia issues an ultimatum', body: 'Moscow demands NATO bar Ukraine from ever joining and roll back its military presence in Eastern Europe. The West rejects the terms.' },
+        { date: 'Feb 24, 2022', title: 'Full-scale invasion begins', body: 'Russian forces attack Ukraine from multiple directions at once, aiming to seize Kyiv within days.' },
+        { date: 'Mar 2022', title: 'Zaporizhzhia plant seized', body: "Russian forces occupy Europe's largest nuclear power plant, which remains under Russian control and repeatedly loses external power." },
+        { date: 'Apr 2022', title: 'Retreat from Kyiv, Bucha revealed', body: 'Russian forces withdraw from northern Ukraine after a failed assault on the capital. Evidence of civilian killings emerges in the town of Bucha.' },
+        { date: 'May 2022', title: 'Mariupol falls', body: 'After a months-long siege that leveled much of the city, the last Ukrainian defenders in Mariupol surrender.' },
+        { date: 'Sep 2022', title: 'Russia claims four annexations', body: 'Moscow declares Donetsk, Luhansk, Zaporizhzhia, and Kherson annexed, despite not fully controlling any of them. The move is condemned by the UN General Assembly.' },
+        { date: 'Nov 2022', title: 'Kherson liberated', body: "Ukrainian forces retake Kherson city, the only regional capital Russia had captured, in one of Ukraine's biggest counteroffensive wins." },
+        { date: 'Jun 2023', title: "Ukraine's counteroffensive", body: 'A long-anticipated Ukrainian offensive in the south makes only limited gains against deep, well-prepared Russian defenses.' },
+        { date: 'Feb 2024', title: 'Avdiivka falls', body: 'After months of grinding assault, Russian forces capture the ruined city of Avdiivka in the Donbas.' },
+        { date: 'Jun 2024', title: "Putin's terms", body: "In a speech to Russia's Foreign Ministry, Putin lays out conditions for ending the war: Ukrainian withdrawal from four regions and a permanent bar on NATO membership." },
+        { date: 'Nov 2025', title: "Trump's 28-point plan", body: 'The US puts forward a peace framework requiring major Ukrainian territorial concessions in exchange for security guarantees. Kyiv calls elements of it close to surrender terms.' },
+        { date: '2026', title: 'War continues, talks stall', body: "Negotiations drag on without an agreement. Russia's foreign ministry says it will keep fighting until its territorial demands are met; Ukraine calls for a ceasefire along the current front line instead." }
+      ],
+      mapSvg: UKRAINE_MAP_SVG
+    },
+    'israel-palestine': {
+      id: 'israel-palestine',
+      title: 'Israel and Palestine',
+      subtitle: 'Two national narratives, one contested land',
+      price: 9.99,
+      status: 'coming-soon',
+      overview: "A conflict with roots more than a century deep, and a war in Gaza that has dominated headlines since October 2023. This kit is still in production — it deserves its own careful, dedicated pass rather than a rushed one."
+    },
+    'us-china-taiwan': {
+      id: 'us-china-taiwan',
+      title: 'US–China and Taiwan',
+      subtitle: "Why a strait 100 miles wide could decide how the century unfolds",
+      price: 9.99,
+      status: 'coming-soon',
+      overview: "Why the world's two largest economies are locked in strategic competition, and why Taiwan sits at the center of it. This kit is still in production."
+    }
+  };
+
+  var STORAGE_KEY = 'bearings_state_v1';
+
+  function defaultState(){ return { theme: null, user: null, purchases: [] }; }
+
+  function loadState(){
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        var saved = JSON.parse(raw);
+        var d = defaultState();
+        return { theme: saved.theme != null ? saved.theme : d.theme, user: saved.user || d.user, purchases: saved.purchases || d.purchases };
+      }
+    } catch(e) {}
+    return defaultState();
+  }
+
+  function saveState(){
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+  }
+
+  var state = loadState();
+  var ui = { view: 'home', activeKit: null, activeTab: 'overview', authOpen: false, authMode: 'signup', pendingPurchase: false, checkoutOpen: false, cardIndex: 0, cardFlipped: false };
+
+  function applyTheme(){
+    if (state.theme === 'light') document.documentElement.setAttribute('data-theme','light');
+    else if (state.theme === 'dark') document.documentElement.setAttribute('data-theme','dark');
+    else document.documentElement.removeAttribute('data-theme');
+  }
+
+  function themeIcon(){
+    if (state.theme === 'light') return '&#9728;&#65039;';
+    if (state.theme === 'dark') return '&#127769;';
+    return '&#9680;';
+  }
+
+  function cycleTheme(){
+    if (state.theme == null) state.theme = 'light';
+    else if (state.theme === 'light') state.theme = 'dark';
+    else state.theme = null;
+    saveState(); applyTheme(); render();
+  }
+
+  function renderHeader(){
+    var right = state.user
+      ? '<span class="user-chip">' + escapeHtml(state.user.name) + '</span><button class="btn btn-ghost" data-action="logout">Log out</button>'
+      : '<button class="btn btn-ghost" data-action="open-auth" data-mode="login">Log in</button><button class="btn btn-primary" data-action="open-auth" data-mode="signup">Sign up</button>';
+    return '<header class="site-header"><div class="header-inner">' +
+      '<a href="#" class="logo" data-action="go-home">Bearings</a>' +
+      '<nav class="header-nav">' + right + '<button class="theme-toggle" data-action="toggle-theme" aria-label="Toggle color theme" title="Toggle color theme">' + themeIcon() + '</button></nav>' +
+      '</div></header>';
+  }
+
+  function renderKitCard(kit){
+    var owned = state.purchases.indexOf(kit.id) !== -1;
+    var available = kit.status === 'available';
+    var bottom = available
+      ? '<span class="kit-price">$' + kit.price.toFixed(2) + '</span><button class="btn ' + (owned ? 'btn-secondary' : 'btn-primary') + '" data-action="view-kit" data-kit="' + kit.id + '">' + (owned ? 'Open kit' : 'View kit') + '</button>'
+      : '<span class="kit-soon">Coming soon</span>';
+    return '<article class="kit-card ' + (!available ? 'kit-card--soon' : '') + '">' +
+      '<div class="kit-card-top"><h3>' + kit.title + '</h3><p>' + kit.subtitle + '</p></div>' +
+      '<div class="kit-card-bottom">' + bottom + '</div></article>';
+  }
+
+  function renderHome(){
+    var days = UKRAINE_WAR_DAYS.toLocaleString();
+    var cards = '';
+    var order = ['ukraine-russia','israel-palestine','us-china-taiwan'];
+    for (var i=0;i<order.length;i++){ cards += renderKitCard(KITS[order[i]]); }
+    return '<main>' +
+      '<section class="hero"><div class="hero-inner">' +
+        '<div class="hero-copy">' +
+          '<h1>Most people understand Ukraine, Gaza, or Taiwan from headlines built for outrage, not from any real grasp of the history or the stakes.</h1>' +
+          '<p class="hero-sub">Bearings kits give you the workbook, flashcards, timeline, and map for one topic &mdash; enough to actually understand it, in a few focused hours.</p>' +
+          '<div class="hero-actions"><button class="btn btn-primary btn-lg" data-action="view-kit" data-kit="ukraine-russia">Start with Russia &amp; Ukraine &mdash; $9.99</button></div>' +
+        '</div>' +
+        '<div class="hero-stat"><div class="stat-card">' +
+          '<p class="stat-label">Live count</p>' +
+          '<p class="stat-number mono">Day ' + days + '</p>' +
+          '<p class="stat-caption">since Russia\'s full-scale invasion of Ukraine began, Feb 24, 2022</p>' +
+        '</div></div>' +
+      '</div></section>' +
+      '<section class="catalog"><h2>Choose a kit</h2><div class="kit-grid">' + cards + '</div></section>' +
+      '<section class="how"><h2>What\'s in a kit</h2><div class="how-grid">' +
+        '<div class="how-item"><h3>Workbook</h3><p>A structured read that takes you from "what is this" to "how did we get here" to "where things stand now."</p></div>' +
+        '<div class="how-item"><h3>Flashcards</h3><p>The names, dates, and terms you need, in a format built for actually remembering them.</p></div>' +
+        '<div class="how-item"><h3>Timeline</h3><p>Every major turn laid out in order, so you can see how one event led to the next.</p></div>' +
+        '<div class="how-item"><h3>Map</h3><p>A visual layout of who controls what, and how that has shifted.</p></div>' +
+      '</div></section>' +
+    '</main>';
+  }
+
+  function renderComingSoon(kit){
+    return '<main class="kit-detail"><button class="btn-back" data-action="go-home">&larr; All kits</button>' +
+      '<h1>' + kit.title + '</h1><p class="kit-detail-sub">' + kit.subtitle + '</p>' +
+      '<p class="coming-soon-note">' + kit.overview + '</p></main>';
+  }
+
+  function renderKitDetail(kit){
+    return '<main class="kit-detail"><button class="btn-back" data-action="go-home">&larr; All kits</button>' +
+      '<div class="kit-detail-grid"><div>' +
+        '<h1>' + kit.title + '</h1><p class="kit-detail-sub">' + kit.subtitle + '</p><p>' + kit.overview + '</p>' +
+        '<ul class="kit-stats">' +
+          '<li><strong>' + kit.workbook.length + '</strong>workbook chapters</li>' +
+          '<li><strong>' + kit.flashcards.length + '</strong>flashcards</li>' +
+          '<li><strong>' + kit.timeline.length + '</strong>timeline events</li>' +
+          '<li><strong>1</strong>control map</li>' +
+        '</ul>' +
+      '</div>' +
+      '<div class="kit-purchase-card">' +
+        '<p class="kit-price-lg mono">$' + kit.price.toFixed(2) + '</p>' +
+        '<p class="kit-price-note">One-time purchase. Yours to keep.</p>' +
+        '<button class="btn btn-primary btn-lg btn-block" data-action="buy-kit">Get this kit</button>' +
+        '<p class="demo-note">Demo mode &mdash; this walks through the purchase flow without charging a real card.</p>' +
+      '</div></div></main>';
+  }
+
+  function renderOverviewTab(kit){
+    return '<div class="overview"><p class="overview-lead">' + kit.overview + '</p>' +
+      '<div class="overview-grid">' +
+        '<div><h3 class="mono">' + kit.workbook.length + '</h3><p>Workbook chapters</p></div>' +
+        '<div><h3 class="mono">' + kit.flashcards.length + '</h3><p>Flashcards</p></div>' +
+        '<div><h3 class="mono">' + kit.timeline.length + '</h3><p>Timeline events</p></div>' +
+      '</div>' +
+      '<p>Use the tabs above to move between formats &mdash; there\'s no required order.</p>' +
+      '<p class="overview-note">This kit reflects public reporting as of ' + NOW_MONTH_YEAR + '. Check current news for anything that has moved since.</p>' +
+    '</div>';
+  }
+
+  function renderWorkbookTab(kit){
+    var out = '<div class="workbook">';
+    for (var i=0;i<kit.workbook.length;i++){
+      var ch = kit.workbook[i];
+      out += '<section class="workbook-chapter"><h2><span class="chapter-num mono">' + (i+1) + '</span>' + ch.heading + '</h2>' + ch.body + '</section>';
+    }
+    return out + '</div>';
+  }
+
+  function renderFlashcardsTab(kit){
+    var card = kit.flashcards[ui.cardIndex];
+    return '<div class="flashcards">' +
+      '<p class="flash-progress">Card ' + (ui.cardIndex+1) + ' of ' + kit.flashcards.length + '</p>' +
+      '<div class="flash-card ' + (ui.cardFlipped ? 'flash-card--flipped' : '') + '" data-action="flip-card" role="button" tabindex="0" aria-label="Flashcard, tap or press enter to flip">' +
+        '<div class="flash-card-inner">' +
+          '<div class="flash-face flash-face--front"><p>' + card.q + '</p><span class="flash-hint">Tap to reveal</span></div>' +
+          '<div class="flash-face flash-face--back"><p>' + card.a + '</p></div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="flash-controls">' +
+        '<button class="btn btn-ghost" data-action="prev-card" ' + (ui.cardIndex===0?'disabled':'') + '>Previous</button>' +
+        '<button class="btn btn-ghost" data-action="next-card" ' + (ui.cardIndex===kit.flashcards.length-1?'disabled':'') + '>Next</button>' +
+      '</div></div>';
+  }
+
+  function renderTimelineTab(kit){
+    var out = '<div class="timeline">';
+    for (var i=0;i<kit.timeline.length;i++){
+      var ev = kit.timeline[i];
+      out += '<div class="timeline-event"><div class="timeline-date mono">' + ev.date + '</div><div class="timeline-body"><h3>' + ev.title + '</h3><p>' + ev.body + '</p></div></div>';
+    }
+    return out + '</div>';
+  }
+
+  function renderMapTab(kit){
+    return '<div class="map-tab">' + kit.mapSvg + '<p class="map-caption">Simplified for clarity &mdash; boundaries are schematic, not survey-accurate, and control on the ground continues to shift.</p></div>';
+  }
+
+  function renderTabContent(kit){
+    if (ui.activeTab === 'workbook') return renderWorkbookTab(kit);
+    if (ui.activeTab === 'flashcards') return renderFlashcardsTab(kit);
+    if (ui.activeTab === 'timeline') return renderTimelineTab(kit);
+    if (ui.activeTab === 'map') return renderMapTab(kit);
+    return renderOverviewTab(kit);
+  }
+
+  function renderDashboard(kit){
+    var tabs = [
+      {id:'overview', label:'Overview'}, {id:'workbook', label:'Workbook'},
+      {id:'flashcards', label:'Flashcards'}, {id:'timeline', label:'Timeline'}, {id:'map', label:'Map'}
+    ];
+    var bar = '';
+    for (var i=0;i<tabs.length;i++){
+      var t = tabs[i];
+      bar += '<button class="tab ' + (ui.activeTab===t.id?'tab--active':'') + '" role="tab" aria-selected="' + (ui.activeTab===t.id) + '" data-action="set-tab" data-tab="' + t.id + '">' + t.label + '</button>';
+    }
+    return '<main class="dashboard"><button class="btn-back" data-action="go-home">&larr; All kits</button>' +
+      '<h1>' + kit.title + '</h1><div class="tab-bar" role="tablist">' + bar + '</div>' +
+      '<div class="tab-panel">' + renderTabContent(kit) + '</div></main>';
+  }
+
+  function renderKitPage(){
+    var kit = KITS[ui.activeKit];
+    if (!kit) return '<main><p>Kit not found.</p></main>';
+    if (kit.status !== 'available') return renderComingSoon(kit);
+    var owned = state.purchases.indexOf(kit.id) !== -1;
+    return owned ? renderDashboard(kit) : renderKitDetail(kit);
+  }
+
+  function renderAuthModal(){
+    var isSignup = ui.authMode === 'signup';
+    return '<div class="modal-overlay"><div class="modal" role="dialog" aria-modal="true" aria-label="' + (isSignup?'Sign up':'Log in') + '">' +
+      '<button class="modal-close" data-action="close-modal" aria-label="Close">&times;</button>' +
+      '<h2>' + (isSignup ? 'Create your account' : 'Log in') + '</h2>' +
+      '<p class="modal-sub">' + (isSignup ? 'Just your name and email &mdash; no password to remember for this demo.' : 'Enter the email you signed up with.') + '</p>' +
+      (isSignup ? '<label class="field"><span>Name</span><input type="text" id="auth-name" placeholder="Your name"></label>' : '') +
+      '<label class="field"><span>Email</span><input type="email" id="auth-email" placeholder="you@example.com"></label>' +
+      '<button class="btn btn-primary btn-block" data-action="submit-auth">' + (isSignup ? 'Create account' : 'Log in') + '</button>' +
+      '<p class="modal-switch">' + (isSignup ? 'Already have an account?' : 'New here?') + ' <button class="link-btn" data-action="switch-auth">' + (isSignup ? 'Log in' : 'Sign up') + '</button></p>' +
+    '</div></div>';
+  }
+
+  function renderCheckoutModal(){
+    var kit = KITS[ui.activeKit];
+    return '<div class="modal-overlay"><div class="modal">' +
+      '<button class="modal-close" data-action="close-modal" aria-label="Close">&times;</button>' +
+      '<h2>Checkout</h2><p class="modal-sub">' + kit.title + ' &mdash; one-time purchase</p>' +
+      '<div class="demo-banner">Demo mode: no real payment is processed. This simulates the purchase so you can see how the kit unlocks.</div>' +
+      '<label class="field"><span>Card number</span><input type="text" value="4242 4242 4242 4242" disabled></label>' +
+      '<div class="field-row"><label class="field"><span>Expiry</span><input type="text" value="12/29" disabled></label><label class="field"><span>CVC</span><input type="text" value="123" disabled></label></div>' +
+      '<button class="btn btn-primary btn-block" data-action="confirm-purchase">Complete purchase &mdash; $' + kit.price.toFixed(2) + ' (demo)</button>' +
+    '</div></div>';
+  }
+
+  function renderFooter(){
+    return '<footer class="site-footer"><p>Bearings is a working prototype &mdash; accounts and purchases are stored only in this browser, and no real payment is processed.</p></footer>';
+  }
+
+  function render(){
+    var app = document.getElementById('app');
+    var html = renderHeader() + (ui.view === 'home' ? renderHome() : renderKitPage()) + renderFooter();
+    if (ui.authOpen) html += renderAuthModal();
+    if (ui.checkoutOpen) html += renderCheckoutModal();
+    app.innerHTML = html;
+    attachDynamicListeners();
+  }
+
+  function attachDynamicListeners(){
+    var emailInput = document.getElementById('auth-email');
+    if (emailInput) emailInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') submitAuth(); });
+    var nameInput = document.getElementById('auth-name');
+    if (nameInput) nameInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') submitAuth(); });
+    var flashCardEl = document.querySelector('.flash-card');
+    if (flashCardEl) flashCardEl.addEventListener('keydown', function(e){
+      if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); ui.cardFlipped = !ui.cardFlipped; render(); }
+    });
+    var overlay = document.querySelector('.modal-overlay');
+    if (overlay) overlay.addEventListener('click', function(e){ if (e.target === overlay) closeModal(); });
+    if (ui.authOpen){
+      var firstField = document.getElementById('auth-name') || document.getElementById('auth-email');
+      if (firstField) firstField.focus();
+    }
+    if (ui.checkoutOpen){
+      var closeBtn = document.querySelector('.modal-close');
+      if (closeBtn) closeBtn.focus();
+    }
+  }
+
+  function closeModal(){ ui.authOpen = false; ui.checkoutOpen = false; render(); }
+
+  function submitAuth(){
+    var emailInput = document.getElementById('auth-email');
+    var email = emailInput ? emailInput.value.trim() : '';
+    if (!email){ if (emailInput) emailInput.focus(); return; }
+    if (ui.authMode === 'signup'){
+      var nameInput = document.getElementById('auth-name');
+      var name = nameInput ? nameInput.value.trim() : '';
+      state.user = { name: name || email.split('@')[0], email: email };
+    } else {
+      state.user = (state.user && state.user.email === email) ? state.user : { name: email.split('@')[0], email: email };
+    }
+    saveState();
+    ui.authOpen = false;
+    if (ui.pendingPurchase){ ui.pendingPurchase = false; ui.checkoutOpen = true; }
+    render();
+  }
+
+  function handleAction(action, el){
+    if (action === 'go-home'){ ui.view = 'home'; ui.authOpen = false; ui.checkoutOpen = false; render(); window.scrollTo(0,0); return; }
+    if (action === 'view-kit'){ ui.activeKit = el.getAttribute('data-kit'); ui.view = 'kit'; ui.activeTab = 'overview'; ui.cardIndex = 0; ui.cardFlipped = false; render(); window.scrollTo(0,0); return; }
+    if (action === 'set-tab'){ ui.activeTab = el.getAttribute('data-tab'); ui.cardIndex = 0; ui.cardFlipped = false; render(); return; }
+    if (action === 'open-auth'){ ui.authOpen = true; ui.authMode = el.getAttribute('data-mode') || 'signup'; render(); return; }
+    if (action === 'close-modal'){ closeModal(); return; }
+    if (action === 'switch-auth'){ ui.authMode = ui.authMode === 'signup' ? 'login' : 'signup'; render(); return; }
+    if (action === 'submit-auth'){ submitAuth(); return; }
+    if (action === 'logout'){ state.user = null; saveState(); render(); return; }
+    if (action === 'buy-kit'){
+      if (!state.user){ ui.authOpen = true; ui.authMode = 'signup'; ui.pendingPurchase = true; render(); return; }
+      ui.checkoutOpen = true; render(); return;
+    }
+    if (action === 'confirm-purchase'){
+      var kitId = ui.activeKit;
+      if (state.purchases.indexOf(kitId) === -1) state.purchases.push(kitId);
+      saveState();
+      ui.checkoutOpen = false; ui.activeTab = 'overview';
+      render();
+      return;
+    }
+    if (action === 'flip-card'){ ui.cardFlipped = !ui.cardFlipped; render(); return; }
+    if (action === 'next-card'){
+      var kit1 = KITS[ui.activeKit];
+      if (ui.cardIndex < kit1.flashcards.length - 1){ ui.cardIndex++; ui.cardFlipped = false; render(); }
+      return;
+    }
+    if (action === 'prev-card'){
+      if (ui.cardIndex > 0){ ui.cardIndex--; ui.cardFlipped = false; render(); }
+      return;
+    }
+    if (action === 'toggle-theme'){ cycleTheme(); return; }
+  }
+
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && (ui.authOpen || ui.checkoutOpen)) closeModal();
+  });
+
+  document.addEventListener('click', function(e){
+    var overlay = e.target.classList && e.target.classList.contains('modal-overlay');
+    if (overlay){ closeModal(); return; }
+    var target = e.target.closest ? e.target.closest('[data-action]') : null;
+    if (!target) return;
+    handleAction(target.getAttribute('data-action'), target);
+  });
+
+  applyTheme();
+  render();
+})();
+</script>
+</body>
+</html>
